@@ -15,7 +15,6 @@ namespace MainProject
         public Form1()
         {
             InitializeComponent();
-
             InitialProgram();
         }
         #endregion
