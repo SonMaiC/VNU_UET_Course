@@ -43,6 +43,10 @@
             label2 = new Label();
             label1 = new Label();
             groupBox2 = new GroupBox();
+            txbModbusPort = new TextBox();
+            txbModbusIP = new TextBox();
+            label29 = new Label();
+            label30 = new Label();
             btnTcpOpen = new Button();
             txbSerPort = new TextBox();
             txbSerIP = new TextBox();
@@ -54,8 +58,6 @@
             txbWLength = new TextBox();
             label27 = new Label();
             label26 = new Label();
-            cbbMProtocol = new ComboBox();
-            label25 = new Label();
             txbWDev = new TextBox();
             txbRDev = new TextBox();
             label11 = new Label();
@@ -64,14 +66,11 @@
             txbRVal = new TextBox();
             label12 = new Label();
             txbWVal = new TextBox();
-            cbbRType = new ComboBox();
-            cbbWType = new ComboBox();
             btnClear = new Button();
             tabControl1 = new TabControl();
             tbMain = new TabPage();
             pictureBox1 = new PictureBox();
             label18 = new Label();
-            cbbProtocol = new ComboBox();
             btnSaveLog = new Button();
             checkBox1 = new CheckBox();
             groupBox4 = new GroupBox();
@@ -87,10 +86,8 @@
             label21 = new Label();
             label20 = new Label();
             label19 = new Label();
-            label10 = new Label();
-            txbStatus = new TextBox();
-            label17 = new Label();
             panel2 = new Panel();
+            button2 = new Button();
             button1 = new Button();
             lbSerStt = new Label();
             lbCOMStt = new Label();
@@ -104,13 +101,21 @@
             btnComSend = new Button();
             btnTcpSend = new Button();
             tbSetting = new TabPage();
+            btnSaveConfig = new Button();
+            btnLoadConfig = new Button();
+            cbbProtocol = new ComboBox();
+            label10 = new Label();
+            txbStatus = new TextBox();
+            label17 = new Label();
             panel1 = new Panel();
             pictureBox2 = new PictureBox();
-            label16 = new Label();
+            label31 = new Label();
             label15 = new Label();
-            label14 = new Label();
             label13 = new Label();
+            label16 = new Label();
+            label14 = new Label();
             frmTimer = new System.Windows.Forms.Timer(components);
+            panel3 = new Panel();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -124,6 +129,7 @@
             tbSetting.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            panel3.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
@@ -148,7 +154,7 @@
             // 
             // btnComOpen
             // 
-            btnComOpen.Location = new Point(62, 174);
+            btnComOpen.Location = new Point(67, 211);
             btnComOpen.Name = "btnComOpen";
             btnComOpen.Size = new Size(113, 28);
             btnComOpen.TabIndex = 9;
@@ -247,6 +253,10 @@
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(txbModbusPort);
+            groupBox2.Controls.Add(txbModbusIP);
+            groupBox2.Controls.Add(label29);
+            groupBox2.Controls.Add(label30);
             groupBox2.Controls.Add(btnTcpOpen);
             groupBox2.Controls.Add(txbSerPort);
             groupBox2.Controls.Add(txbSerIP);
@@ -259,9 +269,43 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "TCP/IP Client";
             // 
+            // txbModbusPort
+            // 
+            txbModbusPort.Location = new Point(107, 145);
+            txbModbusPort.Name = "txbModbusPort";
+            txbModbusPort.Size = new Size(77, 27);
+            txbModbusPort.TabIndex = 14;
+            txbModbusPort.Text = "502";
+            // 
+            // txbModbusIP
+            // 
+            txbModbusIP.Location = new Point(107, 111);
+            txbModbusIP.Name = "txbModbusIP";
+            txbModbusIP.Size = new Size(144, 27);
+            txbModbusIP.TabIndex = 13;
+            txbModbusIP.Text = "192.168.1.13";
+            // 
+            // label29
+            // 
+            label29.AutoSize = true;
+            label29.Location = new Point(5, 148);
+            label29.Name = "label29";
+            label29.Size = new Size(96, 20);
+            label29.TabIndex = 12;
+            label29.Text = "Modbus Port:";
+            // 
+            // label30
+            // 
+            label30.AutoSize = true;
+            label30.Location = new Point(5, 114);
+            label30.Name = "label30";
+            label30.Size = new Size(103, 20);
+            label30.TabIndex = 11;
+            label30.Text = "Modbus Addr:";
+            // 
             // btnTcpOpen
             // 
-            btnTcpOpen.Location = new Point(84, 174);
+            btnTcpOpen.Location = new Point(84, 211);
             btnTcpOpen.Name = "btnTcpOpen";
             btnTcpOpen.Size = new Size(100, 28);
             btnTcpOpen.TabIndex = 10;
@@ -275,7 +319,7 @@
             txbSerPort.Name = "txbSerPort";
             txbSerPort.Size = new Size(77, 27);
             txbSerPort.TabIndex = 3;
-            txbSerPort.Text = "12000";
+            txbSerPort.Text = "1300";
             // 
             // txbSerIP
             // 
@@ -283,35 +327,35 @@
             txbSerIP.Name = "txbSerIP";
             txbSerIP.Size = new Size(144, 27);
             txbSerIP.TabIndex = 2;
-            txbSerIP.Text = "192.168.10.134";
+            txbSerIP.Text = "192.168.1.39";
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(10, 57);
+            label6.Location = new Point(5, 57);
             label6.Name = "label6";
-            label6.Size = new Size(83, 20);
+            label6.Size = new Size(64, 20);
             label6.TabIndex = 1;
-            label6.Text = "Server Port:";
+            label6.Text = "MC Port:";
             // 
             // label5
             // 
             label5.AutoSize = true;
             label5.Location = new Point(5, 23);
             label5.Name = "label5";
-            label5.Size = new Size(69, 20);
+            label5.Size = new Size(91, 20);
             label5.TabIndex = 0;
-            label5.Text = "Server IP:";
+            label5.Text = "MC Address:";
             // 
             // lsbShowData
             // 
             lsbShowData.FormattingEnabled = true;
             lsbShowData.HorizontalScrollbar = true;
             lsbShowData.ItemHeight = 20;
-            lsbShowData.Location = new Point(369, 71);
+            lsbShowData.Location = new Point(369, 31);
             lsbShowData.Name = "lsbShowData";
             lsbShowData.ScrollAlwaysVisible = true;
-            lsbShowData.Size = new Size(409, 384);
+            lsbShowData.Size = new Size(409, 424);
             lsbShowData.TabIndex = 12;
             // 
             // groupBox3
@@ -320,8 +364,6 @@
             groupBox3.Controls.Add(txbWLength);
             groupBox3.Controls.Add(label27);
             groupBox3.Controls.Add(label26);
-            groupBox3.Controls.Add(cbbMProtocol);
-            groupBox3.Controls.Add(label25);
             groupBox3.Controls.Add(txbWDev);
             groupBox3.Controls.Add(txbRDev);
             groupBox3.Controls.Add(label11);
@@ -332,7 +374,7 @@
             groupBox3.Controls.Add(txbWVal);
             groupBox3.Location = new Point(3, 3);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(775, 220);
+            groupBox3.Size = new Size(775, 138);
             groupBox3.TabIndex = 16;
             groupBox3.TabStop = false;
             groupBox3.Text = "PLC";
@@ -340,7 +382,7 @@
             // label28
             // 
             label28.AutoSize = true;
-            label28.Location = new Point(244, 65);
+            label28.Location = new Point(245, 23);
             label28.Name = "label28";
             label28.Size = new Size(54, 20);
             label28.TabIndex = 31;
@@ -348,7 +390,7 @@
             // 
             // txbWLength
             // 
-            txbWLength.Location = new Point(235, 91);
+            txbWLength.Location = new Point(236, 49);
             txbWLength.Name = "txbWLength";
             txbWLength.Size = new Size(72, 27);
             txbWLength.TabIndex = 29;
@@ -356,7 +398,7 @@
             // label27
             // 
             label27.AutoSize = true;
-            label27.Location = new Point(157, 65);
+            label27.Location = new Point(158, 23);
             label27.Name = "label27";
             label27.Size = new Size(45, 20);
             label27.TabIndex = 28;
@@ -365,41 +407,22 @@
             // label26
             // 
             label26.AutoSize = true;
-            label26.Location = new Point(62, 65);
+            label26.Location = new Point(63, 23);
             label26.Name = "label26";
             label26.Size = new Size(59, 20);
             label26.TabIndex = 27;
             label26.Text = "Dev No";
             // 
-            // cbbMProtocol
-            // 
-            cbbMProtocol.FormattingEnabled = true;
-            cbbMProtocol.Items.AddRange(new object[] { "MC Protocol", "Modbus TCP/IP" });
-            cbbMProtocol.Location = new Point(93, 22);
-            cbbMProtocol.Name = "cbbMProtocol";
-            cbbMProtocol.Size = new Size(154, 28);
-            cbbMProtocol.TabIndex = 26;
-            cbbMProtocol.SelectedIndexChanged += tabControl1_TabIndexChanged;
-            // 
-            // label25
-            // 
-            label25.AutoSize = true;
-            label25.Location = new Point(18, 25);
-            label25.Name = "label25";
-            label25.Size = new Size(68, 20);
-            label25.TabIndex = 25;
-            label25.Text = "Protocol:";
-            // 
             // txbWDev
             // 
-            txbWDev.Location = new Point(55, 91);
+            txbWDev.Location = new Point(56, 49);
             txbWDev.Name = "txbWDev";
             txbWDev.Size = new Size(72, 27);
             txbWDev.TabIndex = 16;
             // 
             // txbRDev
             // 
-            txbRDev.Location = new Point(55, 128);
+            txbRDev.Location = new Point(56, 86);
             txbRDev.Name = "txbRDev";
             txbRDev.Size = new Size(72, 27);
             txbRDev.TabIndex = 19;
@@ -407,7 +430,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(7, 94);
+            label11.Location = new Point(8, 52);
             label11.Name = "label11";
             label11.Size = new Size(45, 20);
             label11.TabIndex = 16;
@@ -415,7 +438,7 @@
             // 
             // btnPlcWrite
             // 
-            btnPlcWrite.Location = new Point(325, 90);
+            btnPlcWrite.Location = new Point(326, 48);
             btnPlcWrite.Name = "btnPlcWrite";
             btnPlcWrite.Size = new Size(61, 28);
             btnPlcWrite.TabIndex = 10;
@@ -425,7 +448,7 @@
             // 
             // btnPlcRead
             // 
-            btnPlcRead.Location = new Point(325, 128);
+            btnPlcRead.Location = new Point(326, 86);
             btnPlcRead.Name = "btnPlcRead";
             btnPlcRead.Size = new Size(61, 28);
             btnPlcRead.TabIndex = 17;
@@ -435,7 +458,7 @@
             // 
             // txbRVal
             // 
-            txbRVal.Location = new Point(145, 128);
+            txbRVal.Location = new Point(146, 86);
             txbRVal.Name = "txbRVal";
             txbRVal.ReadOnly = true;
             txbRVal.Size = new Size(72, 27);
@@ -444,7 +467,7 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(7, 131);
+            label12.Location = new Point(8, 89);
             label12.Name = "label12";
             label12.Size = new Size(43, 20);
             label12.TabIndex = 18;
@@ -452,28 +475,10 @@
             // 
             // txbWVal
             // 
-            txbWVal.Location = new Point(145, 91);
+            txbWVal.Location = new Point(146, 49);
             txbWVal.Name = "txbWVal";
             txbWVal.Size = new Size(72, 27);
             txbWVal.TabIndex = 17;
-            // 
-            // cbbRType
-            // 
-            cbbRType.FormattingEnabled = true;
-            cbbRType.Items.AddRange(new object[] { "Word", "DWord", "ASCII" });
-            cbbRType.Location = new Point(382, 149);
-            cbbRType.Name = "cbbRType";
-            cbbRType.Size = new Size(71, 28);
-            cbbRType.TabIndex = 23;
-            // 
-            // cbbWType
-            // 
-            cbbWType.FormattingEnabled = true;
-            cbbWType.Items.AddRange(new object[] { "Word", "DWord", "ASCII" });
-            cbbWType.Location = new Point(382, 114);
-            cbbWType.Name = "cbbWType";
-            cbbWType.Size = new Size(71, 28);
-            cbbWType.TabIndex = 22;
             // 
             // btnClear
             // 
@@ -491,24 +496,19 @@
             tabControl1.Controls.Add(tbManual);
             tabControl1.Controls.Add(tbSetting);
             tabControl1.Dock = DockStyle.Bottom;
-            tabControl1.Location = new Point(0, 87);
+            tabControl1.Location = new Point(0, 134);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new Size(792, 523);
             tabControl1.TabIndex = 17;
-            tabControl1.TabIndexChanged += tabControl1_TabIndexChanged;
             // 
             // tbMain
             // 
             tbMain.Controls.Add(pictureBox1);
             tbMain.Controls.Add(label18);
-            tbMain.Controls.Add(cbbProtocol);
             tbMain.Controls.Add(btnSaveLog);
             tbMain.Controls.Add(checkBox1);
             tbMain.Controls.Add(groupBox4);
-            tbMain.Controls.Add(label10);
-            tbMain.Controls.Add(txbStatus);
-            tbMain.Controls.Add(label17);
             tbMain.Controls.Add(panel2);
             tbMain.Controls.Add(lsbShowData);
             tbMain.Controls.Add(btnClear);
@@ -523,9 +523,9 @@
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(128, 292);
+            pictureBox1.Location = new Point(6, 231);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(236, 193);
+            pictureBox1.Size = new Size(358, 253);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 26;
             pictureBox1.TabStop = false;
@@ -533,21 +533,11 @@
             // label18
             // 
             label18.AutoSize = true;
-            label18.Location = new Point(369, 46);
+            label18.Location = new Point(369, 9);
             label18.Name = "label18";
             label18.Size = new Size(150, 20);
             label18.TabIndex = 25;
             label18.Text = "Communication Data";
-            // 
-            // cbbProtocol
-            // 
-            cbbProtocol.FormattingEnabled = true;
-            cbbProtocol.Items.AddRange(new object[] { "MC Protocol", "Modbus TCP/IP" });
-            cbbProtocol.Location = new Point(200, 43);
-            cbbProtocol.Name = "cbbProtocol";
-            cbbProtocol.Size = new Size(154, 28);
-            cbbProtocol.TabIndex = 24;
-            cbbProtocol.SelectedIndexChanged += tabControl1_TabIndexChanged;
             // 
             // btnSaveLog
             // 
@@ -562,7 +552,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(469, 460);
+            checkBox1.Location = new Point(585, 460);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(93, 24);
             checkBox1.TabIndex = 22;
@@ -584,7 +574,7 @@
             groupBox4.Controls.Add(label21);
             groupBox4.Controls.Add(label20);
             groupBox4.Controls.Add(label19);
-            groupBox4.Location = new Point(128, 77);
+            groupBox4.Location = new Point(128, 9);
             groupBox4.Name = "groupBox4";
             groupBox4.Size = new Size(236, 211);
             groupBox4.TabIndex = 21;
@@ -693,34 +683,9 @@
             label19.TabIndex = 22;
             label19.Text = "Object:";
             // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Location = new Point(125, 46);
-            label10.Name = "label10";
-            label10.Size = new Size(68, 20);
-            label10.TabIndex = 16;
-            label10.Text = "Protocol:";
-            // 
-            // txbStatus
-            // 
-            txbStatus.Location = new Point(200, 6);
-            txbStatus.Name = "txbStatus";
-            txbStatus.ReadOnly = true;
-            txbStatus.Size = new Size(578, 27);
-            txbStatus.TabIndex = 15;
-            // 
-            // label17
-            // 
-            label17.AutoSize = true;
-            label17.Location = new Point(141, 9);
-            label17.Name = "label17";
-            label17.Size = new Size(52, 20);
-            label17.TabIndex = 14;
-            label17.Text = "Status:";
-            // 
             // panel2
             // 
+            panel2.Controls.Add(button2);
             panel2.Controls.Add(button1);
             panel2.Controls.Add(lbSerStt);
             panel2.Controls.Add(lbCOMStt);
@@ -731,9 +696,19 @@
             panel2.Size = new Size(120, 484);
             panel2.TabIndex = 13;
             // 
+            // button2
+            // 
+            button2.Location = new Point(4, 165);
+            button2.Name = "button2";
+            button2.Size = new Size(110, 42);
+            button2.TabIndex = 17;
+            button2.Text = "Alarm Clear";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // button1
             // 
-            button1.Location = new Point(4, 114);
+            button1.Location = new Point(4, 117);
             button1.Name = "button1";
             button1.Size = new Size(110, 42);
             button1.TabIndex = 16;
@@ -787,16 +762,14 @@
             // groupBox5
             // 
             groupBox5.Controls.Add(txbComSendData);
-            groupBox5.Controls.Add(cbbRType);
             groupBox5.Controls.Add(label8);
-            groupBox5.Controls.Add(cbbWType);
             groupBox5.Controls.Add(txbTCPSendData);
             groupBox5.Controls.Add(label9);
             groupBox5.Controls.Add(btnComSend);
             groupBox5.Controls.Add(btnTcpSend);
-            groupBox5.Location = new Point(3, 229);
+            groupBox5.Location = new Point(3, 157);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(775, 258);
+            groupBox5.Size = new Size(775, 121);
             groupBox5.TabIndex = 24;
             groupBox5.TabStop = false;
             groupBox5.Text = "TCP/IP";
@@ -841,6 +814,7 @@
             btnComSend.TabIndex = 18;
             btnComSend.Text = "Send";
             btnComSend.UseVisualStyleBackColor = true;
+            btnComSend.Click += btnComSend_Click;
             // 
             // btnTcpSend
             // 
@@ -850,9 +824,12 @@
             btnTcpSend.TabIndex = 20;
             btnTcpSend.Text = "Send";
             btnTcpSend.UseVisualStyleBackColor = true;
+            btnTcpSend.Click += btnTcpSend_Click;
             // 
             // tbSetting
             // 
+            tbSetting.Controls.Add(btnSaveConfig);
+            tbSetting.Controls.Add(btnLoadConfig);
             tbSetting.Controls.Add(groupBox1);
             tbSetting.Controls.Add(groupBox2);
             tbSetting.Location = new Point(4, 29);
@@ -863,13 +840,70 @@
             tbSetting.Text = "Setting";
             tbSetting.UseVisualStyleBackColor = true;
             // 
+            // btnSaveConfig
+            // 
+            btnSaveConfig.Location = new Point(609, 86);
+            btnSaveConfig.Name = "btnSaveConfig";
+            btnSaveConfig.Size = new Size(109, 44);
+            btnSaveConfig.TabIndex = 11;
+            btnSaveConfig.Text = "Save";
+            btnSaveConfig.UseVisualStyleBackColor = true;
+            btnSaveConfig.Click += btnSaveConfig_Click;
+            // 
+            // btnLoadConfig
+            // 
+            btnLoadConfig.Location = new Point(609, 21);
+            btnLoadConfig.Name = "btnLoadConfig";
+            btnLoadConfig.Size = new Size(109, 44);
+            btnLoadConfig.TabIndex = 10;
+            btnLoadConfig.Text = "Load";
+            btnLoadConfig.UseVisualStyleBackColor = true;
+            btnLoadConfig.Click += btnLoadConfig_Click;
+            // 
+            // cbbProtocol
+            // 
+            cbbProtocol.FormattingEnabled = true;
+            cbbProtocol.Items.AddRange(new object[] { "MC Protocol", "Modbus TCP/IP" });
+            cbbProtocol.Location = new Point(87, 11);
+            cbbProtocol.Name = "cbbProtocol";
+            cbbProtocol.Size = new Size(135, 28);
+            cbbProtocol.TabIndex = 24;
+            cbbProtocol.SelectedIndexChanged += cbbProtocol_SelectedIndexChanged;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(12, 14);
+            label10.Name = "label10";
+            label10.Size = new Size(68, 20);
+            label10.TabIndex = 16;
+            label10.Text = "Protocol:";
+            // 
+            // txbStatus
+            // 
+            txbStatus.Location = new Point(306, 11);
+            txbStatus.Name = "txbStatus";
+            txbStatus.ReadOnly = true;
+            txbStatus.Size = new Size(474, 27);
+            txbStatus.TabIndex = 15;
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Location = new Point(237, 14);
+            label17.Name = "label17";
+            label17.Size = new Size(70, 20);
+            label17.TabIndex = 14;
+            label17.Text = "Message:";
+            // 
             // panel1
             // 
             panel1.Controls.Add(pictureBox2);
-            panel1.Controls.Add(label16);
+            panel1.Controls.Add(label31);
             panel1.Controls.Add(label15);
-            panel1.Controls.Add(label14);
             panel1.Controls.Add(label13);
+            panel1.Controls.Add(label16);
+            panel1.Controls.Add(label14);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
@@ -878,62 +912,90 @@
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(254, 0);
+            pictureBox2.Image = Properties.Resources.c_sharp;
+            pictureBox2.Location = new Point(705, 10);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(538, 81);
-            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox2.TabIndex = 4;
+            pictureBox2.Size = new Size(60, 60);
+            pictureBox2.TabIndex = 8;
             pictureBox2.TabStop = false;
             // 
-            // label16
+            // label31
             // 
-            label16.AutoSize = true;
-            label16.Location = new Point(62, 30);
-            label16.Name = "label16";
-            label16.Size = new Size(62, 20);
-            label16.TabIndex = 3;
-            label16.Text = "Nhóm 3";
+            label31.AutoSize = true;
+            label31.Font = new Font("Segoe UI", 30F, FontStyle.Bold, GraphicsUnit.Point);
+            label31.ForeColor = Color.MediumBlue;
+            label31.Location = new Point(275, 13);
+            label31.Name = "label31";
+            label31.Size = new Size(418, 54);
+            label31.TabIndex = 7;
+            label31.Text = "MFC - WPF UET 2023";
             // 
             // label15
             // 
             label15.AutoSize = true;
-            label15.Location = new Point(62, 9);
+            label15.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label15.Location = new Point(77, 47);
             label15.Name = "label15";
-            label15.Size = new Size(39, 20);
-            label15.TabIndex = 2;
-            label15.Text = "1.0.0";
-            // 
-            // label14
-            // 
-            label14.AutoSize = true;
-            label14.Location = new Point(10, 30);
-            label14.Name = "label14";
-            label14.Size = new Size(48, 20);
-            label14.TabIndex = 1;
-            label14.Text = "Team:";
+            label15.Size = new Size(178, 21);
+            label15.TabIndex = 6;
+            label15.Text = "Hội | Nam | Sơn | Huỳnh";
             // 
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(25, 9);
+            label13.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label13.Location = new Point(6, 47);
             label13.Name = "label13";
-            label13.Size = new Size(33, 20);
-            label13.TabIndex = 0;
-            label13.Text = "Ver:";
+            label13.Size = new Size(72, 21);
+            label13.TabIndex = 5;
+            label13.Text = "Member:";
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label16.Location = new Point(77, 14);
+            label16.Name = "label16";
+            label16.Size = new Size(67, 21);
+            label16.TabIndex = 3;
+            label16.Text = "Nhóm 3";
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label14.Location = new Point(6, 14);
+            label14.Name = "label14";
+            label14.Size = new Size(49, 21);
+            label14.TabIndex = 1;
+            label14.Text = "Team:";
             // 
             // frmTimer
             // 
             frmTimer.Enabled = true;
             frmTimer.Tick += frmTimer_Tick;
             // 
+            // panel3
+            // 
+            panel3.Controls.Add(cbbProtocol);
+            panel3.Controls.Add(label10);
+            panel3.Controls.Add(txbStatus);
+            panel3.Controls.Add(label17);
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(0, 81);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(792, 50);
+            panel3.TabIndex = 19;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(792, 610);
+            ClientSize = new Size(792, 657);
+            Controls.Add(panel3);
             Controls.Add(panel1);
             Controls.Add(tabControl1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "Main Project";
             groupBox1.ResumeLayout(false);
@@ -956,6 +1018,8 @@
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -990,8 +1054,6 @@
         private Label label11;
         private TextBox txbWDev;
         private Button btnPlcWrite;
-        private ComboBox cbbWType;
-        private ComboBox cbbRType;
         private Button btnClear;
         private TabControl tabControl1;
         private TabPage tbMain;
@@ -1008,9 +1070,7 @@
         private Panel panel1;
         private Label lbSerStt;
         private Label lbCOMStt;
-        private Label label15;
         private Label label14;
-        private Label label13;
         private Label label16;
         private System.Windows.Forms.Timer frmTimer;
         private Label label17;
@@ -1034,13 +1094,22 @@
         private Label label24;
         private PictureBox pictureBox1;
         private Label label26;
-        private ComboBox cbbMProtocol;
-        private Label label25;
         private GroupBox groupBox5;
         private Label label27;
         private Label label28;
         private TextBox txbWLength;
-        private PictureBox pictureBox2;
         private Button button1;
+        private TextBox txbModbusPort;
+        private TextBox txbModbusIP;
+        private Label label29;
+        private Label label30;
+        private Panel panel3;
+        private Label label31;
+        private Label label15;
+        private Label label13;
+        private PictureBox pictureBox2;
+        private Button btnSaveConfig;
+        private Button btnLoadConfig;
+        private Button button2;
     }
 }

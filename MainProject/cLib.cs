@@ -7,21 +7,25 @@ using System.Threading.Tasks;
 
 namespace MainProject
 {
-    public enum Protocol
+    public struct Protocol
     {
-        MCProtocol,
-        ModbusTCPIP,
-        Serial
+        public const string MC = "MC";
+        public const string Modbus = "Modbus";
     }
 
-    public enum MosbusFunction
+    public static class DataConvert
     {
-        ReadCoil = 0x01,
-        ReadHoldingRegister = 0x03,
-        ReadInputRegister = 0x04,
-        WriteSingleCoil = 0x05,
-        WriteSingleRegister = 0x06,
-        WriteMultiRegister = 0x16
+        public static byte[] StringToByteArray(string s)
+        {
+            byte[] buffer = Encoding.ASCII.GetBytes(s);
+            return buffer;
+        }
+
+        public static string ByteArrayToString(byte[] bytes)
+        {
+            string returnStr = Encoding.UTF8.GetString(bytes);
+            return returnStr;
+        }
     }
 
     public class INIFile

@@ -6,7 +6,15 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+    <PackageIcon></PackageIcon>
+    <RepositoryUrl>https://github.com/Sonsdv/VNU_UET_Course.git</RepositoryUrl>
+    <ApplicationIcon>c_sharp_icon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="c_sharp_icon.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.IO.Ports" Version="7.0.0" />

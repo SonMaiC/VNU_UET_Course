@@ -18,8 +18,6 @@ namespace MainProject
 
             InitialProgram();
         }
-
-
         #endregion
 
         #region Fields
@@ -28,10 +26,10 @@ namespace MainProject
         private string startPath;
         private bool IsComConnected = false;
         private bool IsSerConnected = false;
+        private bool IsVisionStart = false;
         private bool IsRead = false;
         private string ProtocolType = "";
         private string sttMes = "";
-        //List<byte[]> lstRecData = new List<byte[]>();
 
         //Com
         private SerialPort comPort = new SerialPort();
@@ -46,8 +44,10 @@ namespace MainProject
         private TcpClient tcpClient;
         private NetworkStream ns;
         private Thread tRecive;
-        private IPAddress serverIP;
-        private int serverPort;
+        private IPAddress MC_IP;
+        private int MC_Port;
+        private IPAddress MODBUS_IP;
+        private int MODBUS_Port;
         private byte[] TcpReciveData;
         private string mes;
 
@@ -73,22 +73,17 @@ namespace MainProject
             cbbDataBits.SelectedIndex = 3;
             cbbParityBits.SelectedIndex = 0;
             cbbStopBits.SelectedIndex = 0;
-            cbbWType.SelectedIndex = 0;
-            cbbRType.SelectedIndex = 0;
             cbbProtocol.SelectedIndex = 0;
-            cbbMProtocol.SelectedIndex = 0;
 
+            btnLoadConfig_Click(null, null);
             comPort.DataReceived += ComPort_DataReceived;
         }
-        #region Open Connection
+        #region Open/Close Connection
         bool ComOpen()
         {
             try
             {
-                comPort.PortName = cbbPortName.SelectedItem.ToString();
-
-                //comPort.PortName = ComName;
-
+                comPort.PortName = ComName;
                 comPort.BaudRate = ComBaudRate;
                 comPort.DataBits = ComDataBits;
                 comPort.Parity = ComParity;
@@ -115,12 +110,22 @@ namespace MainProject
         }
         bool TcpOpen()
         {
+            IPAddress ip;
+            int port;
+            if (ProtocolType == Protocol.MC)
+            {
+                ip = MC_IP;
+                port = MC_Port;
+            }
+            else
+            {
+                ip = MODBUS_IP;
+                port = MODBUS_Port;
+            }
             try
             {
                 tcpClient = new TcpClient();
-                serverIP = IPAddress.Parse(txbSerIP.Text);
-                serverPort = int.Parse(txbSerPort.Text);
-                tcpClient.Connect(serverIP, serverPort);
+                tcpClient.Connect(ip, port);
                 ns = tcpClient.GetStream();
                 if (tcpClient != null && tcpClient.Connected)
                 {
@@ -152,30 +157,12 @@ namespace MainProject
         }
         #endregion
 
-        #region Sent Data
-        void SendData2Com(string nData)
-        {
-            if (comPort.IsOpen)
-            {
-                comPort.WriteLine(nData);
-            }
-        }
-        void SendData2Server(string nData)
-        {
-            if (tcpClient != null && tcpClient.Connected)
-            {
-                byte[] bData = Encoding.UTF8.GetBytes(nData);
-                ns.Write(bData, 0, bData.Length);
-            }
-        }
-        #endregion
-
         private void ShowData(string nData)
         {
             this.Invoke(new Action(() =>
             {
                 lsbShowData.Items.Insert(0, nData);
-                if (lsbShowData.Items.Count > 50) lsbShowData.Items.RemoveAt(50);
+                if (lsbShowData.Items.Count > 500) lsbShowData.Items.RemoveAt(500);
             }));
         }
         public void WriteDeviceBlockD16(int nAddress, int nLength, Int16 nVal)
@@ -302,16 +289,7 @@ namespace MainProject
 
             ns.Write(Send2Data, 0, 21);
         }
-
-        /// <summary>
-        /// Write data usign mosbus TCP/IP
-        /// </summary>
-        /// <param name="stt">STT goi tin</param>
-        /// <param name="nType">Function</param>
-        /// <param name="nStartAddr">Dia chi bat dau</param>
-        /// <param name="nLength">Do dai</param>
-        /// <param name="nVal">Gia tri can ghi</param>
-        public void WriteDeviceS71200(Int16 stt, MosbusFunction nType, int nStartAddr, int nLength, Int16 nVal)
+        public void WriteDeviceS71200(Int16 stt, int nStartAddr, int nLength, Int16 nVal)
         {
             byte[] Send2Data = new byte[10 + nLength * 2];
             byte[] byteStt = BitConverter.GetBytes(stt);
@@ -326,7 +304,7 @@ namespace MainProject
             Send2Data[4] = 0x00;            //Length: do dai goi tin
             Send2Data[5] = 0x06;            //Length: do dai goi tin
             Send2Data[6] = 0x01;            //Unit Identifier: Slave ID
-            Send2Data[7] = (byte)nType;         //Function: dinh dang la viet du lieu
+            Send2Data[7] = 0x06;         //Function: dinh dang la viet du lieu
             Send2Data[8] = ByteAddr[1];      //
             Send2Data[9] = ByteAddr[0];      //
 
@@ -394,8 +372,6 @@ namespace MainProject
         }
         #endregion
 
-        short[] plcData;
-
         #region Event Handles
         private void OpenConnection_Click(object sender, EventArgs e)
         {
@@ -418,32 +394,159 @@ namespace MainProject
                 else txbStatus.Text = "Server Close Fail!!!";
             }
         }
-        private void frmTimer_Tick(object sender, EventArgs e)
+        private void btnTcpOpen_Click(object sender, EventArgs e)
         {
-            lbSerStt.Text = IsSerConnected ? "Server Connect" : "Server Disconnect";
-            lbSerStt.ForeColor = IsSerConnected ? Color.Green : Color.Red;
-            btnTcpOpen.Text = IsSerConnected ? "Server Connect" : "Server Disconnect";
-            btnTcpOpen.BackColor = IsSerConnected ? Color.Green : SystemColors.Control;
-            lbCOMStt.Text = IsComConnected ? "COM Connect" : "COM Disconnect";
-            lbCOMStt.ForeColor = IsComConnected ? Color.Green : Color.Red;
-            btnComOpen.Text = IsComConnected ? "COM Connect" : "COM Disconnect";
-            btnComOpen.BackColor = IsComConnected ? Color.Green : SystemColors.Control;
-            btnAllOpen.Text = IsSerConnected && IsComConnected ? "Disconnect" : "Connect";
-            btnAllOpen.BackColor = IsSerConnected && IsComConnected ? Color.Green : SystemColors.Control;
-
-            txbVisObject.Text = objDetect;
-            txbVisScore.Text = score.ToString();
-            txbVisX1.Text = x1.ToString();
-            txbVisY1.Text = y1.ToString();
-            txbVisX2.Text = x2.ToString();
-            txbVisY2.Text = y2.ToString();
-
-            if (sttMes != "")
+            if (!IsSerConnected)
             {
-                txbStatus.Text = sttMes;
-                sttMes = "";
+                if (TcpOpen()) IsSerConnected = true;
+                else txbStatus.Text = "Server Open Fail!!!";
+            }
+            else
+            {
+                if (TcpClose()) IsSerConnected = false;
+                else txbStatus.Text = "Server Close Fail!!!";
             }
         }
+        private void btnComOpen_Click(object sender, EventArgs e)
+        {
+            if (!IsComConnected)
+            {
+                if (ComOpen()) IsComConnected = true;
+                else txbStatus.Text = "Com Open Fail!!!";
+            }
+            else
+            {
+                if (ComClose()) IsComConnected = false;
+                else txbStatus.Text = "Com Close Fail!!!";
+            }
+        }
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            lsbShowData.Items.Clear();
+        }
+        private void btnComSend_Click(object sender, EventArgs e)
+        {
+            if (IsVisionStart) return;
+            if (comPort.IsOpen)
+            {
+                comPort.WriteLine(txbComSendData.Text);
+            }
+        }
+        private void btnTcpSend_Click(object sender, EventArgs e)
+        {
+            if (IsVisionStart) return;
+            if (tcpClient != null && tcpClient.Connected && ns != null)
+            {
+                byte[] bData = Encoding.UTF8.GetBytes(txbTCPSendData.Text);
+                ns.Write(bData, 0, bData.Length);
+            }
+        }
+        private void PLCWrite_Click(object sender, EventArgs e)
+        {
+            short data = short.Parse(txbWVal.Text);
+            switch (ProtocolType)
+            {
+                case Protocol.MC:
+                    WriteDeviceBlockD16(int.Parse(txbWDev.Text), int.Parse(txbWLength.Text), data);
+                    break;
+                case Protocol.Modbus:
+                    WriteDeviceS71200(1, int.Parse(txbWDev.Text), 1, data);
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void btnPlcRead_Click(object sender, EventArgs e)
+        {
+            IsRead = true;
+            //ReadDeviceBlockD16(txbRDev.Text, 10);
+            CheckDataS71200(1, 0, 1);
+        }
+        private void btnVisStart_Click(object sender, EventArgs e)
+        {
+            if (!IsVisionStart)
+            {
+                byte[] comData = Encoding.UTF8.GetBytes("start\r\n");
+                comPort.Write(comData, 0, comData.Length);
+                IsVisionStart = true;
+            }
+            else
+            {
+                byte[] comData = Encoding.UTF8.GetBytes("stop\r\n");
+                comPort.Write(comData, 0, comData.Length);
+                WriteToPLC(0);
+                IsVisionStart = false;
+            }
+        }
+
+        private void cbbProtocol_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsSerConnected)
+            {
+                if (ProtocolType == Protocol.MC) cbbProtocol.SelectedIndex = 0;
+                if (ProtocolType == Protocol.Modbus) cbbProtocol.SelectedIndex = 1;
+                return;
+            }
+
+            if (cbbProtocol.SelectedIndex == 0) ProtocolType = Protocol.MC;
+            if (cbbProtocol.SelectedIndex == 1) ProtocolType = Protocol.Modbus;
+        }
+        private void btnSaveConfig_Click(object sender, EventArgs e)
+        {
+            configFile.SetData("TCP/IP", "MCIP", txbSerIP.Text);
+            configFile.SetData("TCP/IP", "MCPort", txbSerPort.Text);
+            configFile.SetData("TCP/IP", "ModbusIP", txbModbusIP.Text);
+            configFile.SetData("TCP/IP", "ModbusPort", txbModbusPort.Text);
+            configFile.SetData("Serial", "COM Name", cbbPortName.Text);
+            configFile.SetData("Serial", "BaudRate", cbbBaudRate.Text);
+            configFile.SetData("Serial", "ParityBits", cbbParityBits.SelectedIndex);
+            configFile.SetData("Serial", "DataBits", cbbDataBits.Text);
+            configFile.SetData("Serial", "StopBits", cbbStopBits.SelectedIndex + 1);
+            btnLoadConfig_Click(null, null);
+        }
+        private void btnLoadConfig_Click(object sender, EventArgs e)
+        {
+            if (!File.Exists(startPath + "config.ini"))
+            {
+                btnSaveConfig_Click(null, null);
+                return;
+            }
+            try
+            {
+                MC_IP = IPAddress.Parse(configFile.GetSData("TCP/IP", "MCIP"));
+                MC_Port = configFile.GetIData("TCP/IP", "MCPort");
+                MODBUS_IP = IPAddress.Parse(configFile.GetSData("TCP/IP", "ModbusIP"));
+                MODBUS_Port = configFile.GetIData("TCP/IP", "ModbusPort");
+                txbSerIP.Text = MC_IP.ToString();
+                txbSerPort.Text = MC_Port.ToString();
+                txbModbusIP.Text = MODBUS_IP.ToString();
+                txbModbusPort.Text = MODBUS_Port.ToString();
+
+                ComName = configFile.GetSData("Serial", "COM Name");
+                ComBaudRate = configFile.GetIData("Serial", "BaudRate");
+                ComParity = (Parity)configFile.GetIData("Serial", "ParityBits");
+                ComDataBits = configFile.GetIData("Serial", "DataBits");
+                ComStopBits = (StopBits)configFile.GetIData("Serial", "StopBits");
+                cbbPortName.SelectedItem = ComName;
+                cbbBaudRate.SelectedItem = ComBaudRate;
+                cbbParityBits.SelectedIndex = (int)configFile.GetIData("Serial", "ParityBits");
+                cbbStopBits.SelectedIndex = (int)configFile.GetIData("Serial", "StopBits") - 1;
+                cbbDataBits.SelectedItem = ComDataBits.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                txbStatus.Text = "Load Data Fail!_" + ex.Message.ToString();
+            }
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            WriteToPLC(0);
+        }
+
+        #endregion
+
+        #region Threads
         private void ReciveFromServer()
         {
             while (IsSerConnected)
@@ -458,10 +561,9 @@ namespace MainProject
                     {
                         mes += i + ":" + TcpReciveData[i].ToString("X") + " ";
                     }
-                    ShowData("From Server: " + mes);
                     if (IsRead)
                     {
-                        if (ProtocolType == "MC")
+                        if (ProtocolType == Protocol.MC)
                         {
                             this.Invoke(new Action(() =>
                         {
@@ -470,7 +572,7 @@ namespace MainProject
                         }));
                         }
                         //Modbus TCP/IP
-                        if (ProtocolType == "Modbus")
+                        if (ProtocolType == Protocol.Modbus)
                         {
                             short rValue = (short)(TcpReciveData[9] << 8 | TcpReciveData[10]);
                             this.Invoke(new Action(() =>
@@ -535,9 +637,9 @@ namespace MainProject
                 sendData[3] = (short)y1;
                 sendData[4] = (short)x2;
                 sendData[5] = (short)y1;
-                if (ProtocolType == "Modbus")
+                if (ProtocolType == Protocol.Modbus)
                     WriteMulDeviceS71200(1, 0, 6, sendData);
-                else if (ProtocolType == "MC")
+                else if (ProtocolType == Protocol.MC)
                     WriteMulDeviceBlockD16(0, 6, sendData);
             }
             else
@@ -550,99 +652,50 @@ namespace MainProject
                 sendData[4] = 0;
                 sendData[5] = 0;
 
-                if (ProtocolType == "Modbus")
+                if (ProtocolType == Protocol.Modbus)
                     WriteMulDeviceS71200(1, 0, 6, sendData);
-                else if (ProtocolType == "MC")
+                else if (ProtocolType == Protocol.MC)
                     WriteMulDeviceBlockD16(0, 6, sendData);
             }
-
         }
-        private void btnClear_Click(object sender, EventArgs e)
+        private void frmTimer_Tick(object sender, EventArgs e)
         {
-            lsbShowData.Items.Clear();
-        }
-        private void btnComOpen_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void btnComSend_Click(object sender, EventArgs e)
-        {
-            SendData2Com(txbComSendData.Text);
-        }
-        private void btnTcpOpen_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void btnTcpSend_Click(object sender, EventArgs e)
-        {
-            SendData2Server(txbTCPSendData.Text);
-        }
-        private void PLCWrite_Click(object sender, EventArgs e)
-        {
-            short data = short.Parse(txbWVal.Text);
-            switch (ProtocolType)
+            if (tcpClient != null)
             {
-                case "MC":
-                    WriteDeviceBlockD16(int.Parse(txbWDev.Text), int.Parse(txbWLength.Text), data);
-                    break;
-                case "Modbus":
-                    WriteDeviceS71200(1, MosbusFunction.WriteSingleRegister, int.Parse(txbWDev.Text), 1, data);
-                    break;
-                default:
-                    break;
-            }
-
-        }
-        private void btnPlcRead_Click(object sender, EventArgs e)
-        {
-            IsRead = true;
-            //ReadDeviceBlockD16(txbRDev.Text, 10);
-            CheckDataS71200(1, 0, 1);
-
-        }
-        private void tabControl1_TabIndexChanged(object sender, EventArgs e)
-        {
-            if (IsSerConnected)
-            {
-                if (ProtocolType == "MC") cbbProtocol.SelectedIndex = 0;
-                if (ProtocolType == "Modbus") cbbProtocol.SelectedIndex = 1;
-                if (ProtocolType == "MC") cbbMProtocol.SelectedIndex = 0;
-                if (ProtocolType == "Modbus") cbbMProtocol.SelectedIndex = 1;
-                return;
-            }
-
-            if (tabControl1.SelectedTab == tbManual)
-            {
-                if (cbbMProtocol.SelectedIndex == 0) ProtocolType = "MC";
-                if (cbbMProtocol.SelectedIndex == 1) ProtocolType = "Modbus";
-            }
-            if (tabControl1.SelectedTab == tbMain)
-            {
-                if (cbbProtocol.SelectedIndex == 0) ProtocolType = "MC";
-                if (cbbProtocol.SelectedIndex == 1) ProtocolType = "Modbus";
-            }
-        }
-        #endregion
-
-        private bool IsVisionStart = false;
-        private void btnVisStart_Click(object sender, EventArgs e)
-        {
-            if (!IsVisionStart)
-            {
-                byte[] comData = Encoding.UTF8.GetBytes("start\r\n");
-                comPort.Write(comData, 0, comData.Length);
-                button1.BackColor = Color.LightGreen;
-                button1.Text = "Stop";
-                IsVisionStart = true;
+                lbSerStt.Text = tcpClient.Connected ? "Server Connect" : "Server Disconnect";
+                lbSerStt.ForeColor = tcpClient.Connected ? Color.Green : Color.Red;
+                IsSerConnected = false;
             }
             else
             {
-                byte[] comData = Encoding.UTF8.GetBytes("stop\r\n");
-                comPort.Write(comData, 0, comData.Length);
-                button1.BackColor = Color.LightPink;
-                button1.Text = "Start";
-                IsVisionStart = false;
+                lbSerStt.Text = "Server Disconnect";
+                lbSerStt.ForeColor = Color.Red;
+            }
+
+            btnTcpOpen.Text = IsSerConnected ? "Server Connect" : "Server Disconnect";
+            btnTcpOpen.BackColor = IsSerConnected ? Color.Green : SystemColors.Control;
+            lbCOMStt.Text = IsComConnected ? "COM Connect" : "COM Disconnect";
+            lbCOMStt.ForeColor = IsComConnected ? Color.Green : Color.Red;
+            btnComOpen.Text = IsComConnected ? "COM Connect" : "COM Disconnect";
+            btnComOpen.BackColor = IsComConnected ? Color.Green : SystemColors.Control;
+            btnAllOpen.Text = IsSerConnected && IsComConnected ? "Disconnect" : "Connect";
+            btnAllOpen.BackColor = IsSerConnected && IsComConnected ? Color.Green : SystemColors.Control;
+            button1.BackColor = IsVisionStart? Color.Green : SystemColors.Control;
+            button1.Text = IsVisionStart ? "Stop" : "Start";
+
+            txbVisObject.Text = objDetect;
+            txbVisScore.Text = score.ToString();
+            txbVisX1.Text = x1.ToString();
+            txbVisY1.Text = y1.ToString();
+            txbVisX2.Text = x2.ToString();
+            txbVisY2.Text = y2.ToString();
+
+            if (sttMes != "")
+            {
+                txbStatus.Text = sttMes;
+                sttMes = "";
             }
         }
+        #endregion
     }
 }
